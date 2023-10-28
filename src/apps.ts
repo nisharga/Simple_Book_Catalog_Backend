@@ -4,6 +4,7 @@ const app: Application = express();
 import cookieParser from 'cookie-parser'
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import routes from "./app/routes/index";
 
 app.use(cors());
 // parser
@@ -12,7 +13,7 @@ app.use(express.urlencoded( {extended: true} ));
 app.use(cookieParser())
 
 // Routes
-//app.use('/api/v1', routes); 
+ app.use('/api/v1', routes); 
 
 
 //global error handler
