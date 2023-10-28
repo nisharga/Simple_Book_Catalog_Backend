@@ -1,10 +1,8 @@
 import config from "../config";
-import app from "./apps";
+import app from "./apps"; 
 
-
-const mongoose = require('mongoose');
-
-
+import mongoose from 'mongoose';
+ 
 async function boostrap() {
     try{
         await mongoose.connect(config.database_url as string);
