@@ -4,6 +4,8 @@ import { BookService } from "./book.service"
 import httpStatus  from 'http-status';
 import sendResponse from "../../middlewares/sendResponse";
 import { IBook } from "./book.interface";
+import pick from "../../../utilis/pick";
+import { SearchableFieldsBook, paginationFieldsBook } from "../../../shared/SearchableFields";
 
 
 
@@ -32,7 +34,52 @@ const createBook: RequestHandler = catchAsync(
     })
   })
 
+  const getAllBooks = catchAsync(async (req: Request, res: Response) => {
+    
+    const filters = pick(req.query, SearchableFieldsBook) 
+    const paginationOptions = pick(req.query, paginationFieldsBook)
+  
+    const result = await BookService.getAllBook(filters, paginationOptions)
+  
+    sendResponse<IBook[]>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'All Book Retrived Successfully',
+      meta: result.meta,
+      data: result.data,
+    })
+  })
+
+  const updateBook = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
+    const updatedData = req.body
+    const result = await BookService.updateBook(id, updatedData)
+  
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Book Data updated Successfully',
+      data: result,
+    })
+  })
+  
+  const deleteBook = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = await BookService.deleteBook(id)
+  
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Delete Book Successfully',
+      data: result,
+    })
+  })
+  
+
   export const BookController = {
     createBook,
-    getBook
+    getBook,
+    getAllBooks,
+    updateBook,
+    deleteBook
   }

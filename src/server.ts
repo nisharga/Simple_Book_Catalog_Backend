@@ -14,6 +14,7 @@ async function boostrap() {
           })
     }
     catch(err){
+        // eslint-disable-next-line no-console
         console.log("Faild to connected DB", err);
     }
 }

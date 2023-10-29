@@ -1,4 +1,8 @@
-import { IBook } from "./book.interface"
+import { SortOrder } from "mongoose"
+import { paginationHelpers } from "../../../shared/PaginationHelpers"
+import { SearchableFieldsBook } from "../../../shared/SearchableFields"
+import { IGenericResponse } from "../../../utilis/pagination.response"
+import { IBook, IFilterRequest, IPaginationOptions } from "./book.interface"
 import { Book } from "./book.model"
 
 const createBook = async ( userDetails: IBook): Promise<IBook | null> => {
@@ -18,77 +22,83 @@ const getBook = async (id: string): Promise<IBook | null> => {
 //   })
 //   return jwttoken
 // }
-// const getAllUser = async (
-//   filters: ISingleUserFilterRequest,
-//   paginationOptions: IPaginationOptions,
-// ): Promise<IGenericResponse<ISingleUser[]>> => {
-//   const { searchTerm, ...filtersData } = filters
 
-//   const andConditions = []
+const getAllBook = async ( filters: IFilterRequest, paginationOptions: IPaginationOptions,
+): Promise<IGenericResponse<IBook[]>> => {
 
-//   if (searchTerm) {
-//     andConditions.push({
-//       $or: SearchableFields.map((field: any) => ({
-//         [field]: {
-//           $regex: searchTerm,
-//           $options: 'i',
-//         },
-//       })),
-//     })
-//   }
-//   if (Object.keys(filtersData).length) {
-//     andConditions.push({
-//       $and: Object.entries(filtersData).map(([field, value]) => ({
-//         [field]: value,
-//       })),
-//     })
-//   }
+  const { searchTerm, ...filtersData } = filters
+  
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions)
 
-//   const { page, limit, skip, sortBy, sortOrder } =
-//     paginationHelpers.calculatePagination(paginationOptions)
+  const andConditions = []
 
-//   const sortConditions: { [key: string]: SortOrder } = {}
+  if (searchTerm) {
+    andConditions.push({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      $or: SearchableFieldsBook.map((field: any) => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      })),
+    })
+  }
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    })
+  }
 
-//   if (sortBy && sortOrder) {
-//     sortConditions[sortBy] = sortOrder
-//   }
+  
 
-//   const whereConditions =
-//     andConditions.length > 0 ? { $and: andConditions } : {}
+  const sortConditions: { [key: string]: SortOrder } = {}
 
-//   const result = await SingleUser.find(whereConditions)
-//     .sort(sortConditions)
-//     .skip(skip)
-//     .limit(limit)
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder
+  }
 
-//   const total = await SingleUser.countDocuments()
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {}
 
-//   return {
-//     meta: {
-//       page,
-//       limit,
-//       total,
-//     },
-//     data: result,
-//   }
-// }
+  const result = await Book.find(whereConditions)
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit)
 
-// const updateUser = async (
-//   id: string,
-//   payload: Partial<ISingleUser>,
-// ): Promise<ISingleUser | null> => {
-//   const result = await SingleUser.findOneAndUpdate({ _id: id }, payload, {
-//     new: true,
-//   })
-//   return result
-// }
+  const total = await Book.countDocuments()
 
-// const deleteUser = async (id: string): Promise<ISingleUser | null> => {
-//   const result = await SingleUser.findByIdAndDelete(id)
-//   return result
-// }
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  }
+}
+
+const updateBook = async (
+  id: string,
+  payload: Partial<IBook>,
+): Promise<IBook | null> => {
+  const result = await Book.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  })
+  return result
+}
+
+const deleteBook = async (id: string): Promise<IBook | null> => {
+  const result = await Book.findByIdAndDelete(id)
+  return result
+}
 
 export const BookService = {
     createBook,
-    getBook
+    getBook,
+    getAllBook,
+    updateBook,
+    deleteBook
 }
