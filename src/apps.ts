@@ -1,10 +1,10 @@
-import express, { Application,NextFunction,Request, Response } from "express";
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-const app: Application = express(); 
-import cookieParser from 'cookie-parser'
+import express, { Application, NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routes from "./app/routes/index";
+const app: Application = express(); 
 
 app.use(cors());
 // parser
@@ -34,6 +34,6 @@ app.use((req : Request, res : Response, next: NextFunction) => {
 })  
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
+  res.send('Hello World from Simple Book Catalog!')
 })
 export default app;
