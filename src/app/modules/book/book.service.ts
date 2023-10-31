@@ -15,6 +15,11 @@ const getBook = async (id: string): Promise<IBook | null> => {
   return book;
 }
 
+const getAll = async (): Promise<IBook | null> => {
+  const book = await Book.find({}).sort({ createdAt: -1 }).exec();
+  return book;
+}
+
 
 // const createJwt = (email: any): any => {
 //   const jwttoken = jwt.sign({ data: email }, config.secret, {
@@ -98,6 +103,7 @@ const deleteBook = async (id: string): Promise<IBook | null> => {
 export const BookService = {
     createBook,
     getBook,
+    getAll,
     getAllBook,
     updateBook,
     deleteBook

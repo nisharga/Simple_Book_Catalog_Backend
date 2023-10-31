@@ -1,13 +1,13 @@
 
 
-import { NextFunction, ErrorRequestHandler, Request, Response } from "express"
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express"
+import { ZodError } from "zod"
 import config from "../../../config"
 import { IGenericErrorMessage } from "../../interfaces/error"
-import handleValidationError from "../errors/handleValidationError"
-import handleCastError from "../errors/handleCastError"
-import { ZodError } from "zod"
-import handleZodError from "../errors/handleZodError"
 import ApiError from "../errors/ApiErorr"
+import handleCastError from "../errors/handleCastError"
+import handleValidationError from "../errors/handleValidationError"
+import handleZodError from "../errors/handleZodError"
  
 
 
@@ -69,7 +69,7 @@ const globalErrorHandler: ErrorRequestHandler
             errorMessage,
             stack: config.env !== 'production' ? error?.stack : undefined
         })
-        next()
+        // next()
     }
 
 export default globalErrorHandler; 

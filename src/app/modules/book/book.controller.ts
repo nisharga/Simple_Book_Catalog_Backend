@@ -33,6 +33,18 @@ const createBook: RequestHandler = catchAsync(
       data: result,
     })
   })
+  
+  const getAll = catchAsync(async (req: Request, res: Response) => {
+    
+    const result = await BookService.getAll()
+  
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'ALL Book information Retrived Successfully',
+      data: result,
+    })
+  })
 
   const getAllBooks = catchAsync(async (req: Request, res: Response) => {
     
@@ -81,5 +93,5 @@ const createBook: RequestHandler = catchAsync(
     getBook,
     getAllBooks,
     updateBook,
-    deleteBook
+    deleteBook,getAll
   }
