@@ -1,6 +1,6 @@
 
 
-import { ErrorRequestHandler, NextFunction, Request, Response } from "express"
+import { ErrorRequestHandler, Request, Response } from "express"
 import { ZodError } from "zod"
 import config from "../../../config"
 import { IGenericErrorMessage } from "../../interfaces/error"
@@ -12,7 +12,7 @@ import handleZodError from "../errors/handleZodError"
 
 
 const globalErrorHandler: ErrorRequestHandler
-    = (error, req: Request, res: Response, next: NextFunction) => {
+    = (error, req: Request, res: Response) => {
  
         let statusCode = 500
         let message = 'Something went wrong!'
